@@ -6,13 +6,10 @@ USER nonroot
 
 WORKDIR /app
 
-# Copy and install dependencies
-COPY requirements.txt requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py .
 
-# Copy application code
-COPY app.py app.py
+RUN pip install flask
 
-# Expose port and run the application
 EXPOSE 5000
+
 CMD ["python", "app.py"]
