@@ -3,18 +3,26 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 
-log_file_path = 'app.log'
-if not os.path.exists(log_file_path):
-    with open(log_file_path, 'w'):
-        pass 
+log_dir = 'log'
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
 
-handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=5)
-handler.setLevel(logging.INFO)
+access_handler = RotatingFileHandler(os.path.join(log_dir, 'access.log'), maxBytes=10000, backupCount=5)
+access_handler.setLevel(logging.INFO)
+access_handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
+
+error_handler = RotatingFileHandler(os.path.join(log_dir, 'error.log'), maxBytes=10000, backupCount=5)
+error_handler.setLevel(logging.ERROR)
+error_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+
 
 app = Flask(__name__)
 
-app.logger.addHandler(handler)
+app.logger.addHandler(error_handler)
 app.logger.setLevel(logging.INFO)
+
+werkzeug_logger = logging.getLogger('werkzeug')
+werkzeug_logger.addHandler(access_handler)
 
 @app.route('/')
 def hello_world():
