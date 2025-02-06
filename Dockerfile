@@ -8,7 +8,9 @@ WORKDIR /app
 
 COPY app.py .
 
-RUN pip install flask
+COPY . .
+
+RUN pip install flask concurrent-log-handler
 
 EXPOSE 5000
 
